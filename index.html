@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0b0d">
+  <meta name="application-name" content="Jargon AI">
+  <meta name="description" content="Jargon AI — your thoughtful AI assistant for learning, ideas and getting things done.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Jargon AI">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <title>Jargon AI — Your Intelligence, Refined</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="/" aria-label="Jargon AI home"><span class="brand-mark">J</span><span><strong>JARGON</strong><small>INTELLIGENCE, REFINED</small></span></a>
+      <button class="new-chat" id="newChat"><span>＋</span> New conversation</button>
+      <div class="side-label">WORKSPACE</div>
+      <button class="nav-item active"><span>✧</span> AI Assistant</button>
+      <button class="nav-item" id="historyJump"><span>◷</span> Recent conversations</button>
+      <div class="side-label history-label">YOUR HISTORY</div>
+      <div class="history-list" id="historyList"><p class="empty-history">Your conversations will appear here.</p></div>
+      <div class="sidebar-bottom"><div class="profile-orb">J</div><div class="profile-copy"><strong>Personal workspace</strong><small>Private on this device</small></div><span class="status-dot"></span></div>
+    </aside>
+    <main class="main-panel">
+      <header class="topbar">
+        <button class="mobile-menu" id="menuToggle" aria-label="Open menu">☰</button>
+        <div class="top-context"><span class="live-dot"></span> YOUR PRIVATE AI SPACE</div>
+        <div class="top-actions"><a class="install-button" href="/account" style="text-decoration:none">Account / Plans</a><button class="install-button" id="installButton" hidden>＋ Install app</button><span class="model-pill">✦ &nbsp;Jargon Assistant</span></div>
+      </header>
+      <section class="chat-stage" id="chatStage">
+        <div class="welcome" id="welcome">
+          <div class="eyebrow"><span></span> A MORE THOUGHTFUL WAY TO WORK <span></span></div>
+          <div class="hero-symbol"><div class="symbol-ring"></div><span>✧</span></div>
+          <h1>Good ideas begin<br>with <em>a question.</em></h1>
+          <p class="welcome-copy">A little clarity can change everything. Ask, explore, create —<br class="desktop-break"> your next thought has a place to grow.</p>
+          <div class="suggestion-grid">
+            <button class="suggestion" data-prompt="Help me understand a difficult topic in simple language."><span class="suggestion-icon">◈</span><span><strong>Learn something</strong><small>Make complex ideas simple</small></span><b>↗</b></button>
+            <button class="suggestion" data-prompt="Help me brainstorm a fresh business idea and a practical plan."><span class="suggestion-icon">✧</span><span><strong>Explore an idea</strong><small>Turn a thought into a plan</small></span><b>↗</b></button>
+            <button class="suggestion" data-prompt="Help me write a polished professional email."><span class="suggestion-icon">⌁</span><span><strong>Write with ease</strong><small>Find the right words</small></span><b>↗</b></button>
+            <button class="suggestion" data-prompt="Create a practical step-by-step study plan for me."><span class="suggestion-icon">▤</span><span><strong>Get organised</strong><small>Bring order to your day</small></span><b>↗</b></button>
+          </div>
+        </div>
+        <div class="messages" id="messages" aria-live="polite"></div>
+      </section>
+      <footer class="composer-wrap">
+        <div class="feature-toolbar">
+          <label class="tool-button" for="fileInput" title="Attach an image or document">＋ Attach file</label><input id="fileInput" type="file" accept="image/*,.pdf,.docx,.txt" hidden>
+          <button class="tool-button" type="button" id="voiceButton">🎙 Voice</button>
+          <label class="search-toggle"><input type="checkbox" id="webSearchToggle"> Search web</label>
+          <button class="tool-button" type="button" id="imageToolButton">✦ Create image</button>
+        </div>
+        <div class="attachment-note" id="attachmentNote" hidden></div>
+        <form class="composer" id="chatForm">
+          <textarea id="messageInput" rows="1" placeholder="Ask Jargon anything..." aria-label="Your message"></textarea>
+          <div class="composer-bottom"><span class="composer-hint"><span>✧</span> Thoughtful answers. Fresh possibilities.</span><button class="send-button" id="sendButton" type="submit" aria-label="Send message"><span>Send</span><b>↑</b></button></div>
+        </form>
+        <p class="disclaimer">Jargon can make mistakes. Verify important information.</p>
+      </footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <dialog id="imageDialog" class="image-dialog"><form method="dialog"><button class="dialog-close" aria-label="Close">×</button></form><h2>Create an image</h2><p>Describe the image you want Jargon to generate.</p><textarea id="imagePrompt" placeholder="A modern Kenyan coffee shop poster..." rows="4"></textarea><button id="generateImageButton" class="send-button" type="button"><span>Generate image</span><b>✦</b></button><div id="generatedImageResult"></div></dialog>
+  <script src="/app.js"></script>
+</body>
+</html>
