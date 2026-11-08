@@ -1,75 +1,91 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0b0b0d">
-  <meta name="application-name" content="Jargon AI">
-  <meta name="description" content="Jargon AI — your thoughtful AI assistant for learning, ideas and getting things done.">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Jargon AI">
-  <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  <title>Jargon AI — Your Intelligence, Refined</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jargon AI — Your Intelligent Workspace</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{background:#f8f7ff;color:#111;padding-bottom:100px}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#fff;position:sticky;top:0;z-index:10;box-shadow:0 1px 10px rgba(0,0,0,.06)}
+.logo{font-weight:900;font-size:19px;letter-spacing:-.5px}
+.logo span{color:#6d28d9}
+.new-btn{background:#6d28d9;color:#fff;border:none;padding:9px 14px;border-radius:999px;font-weight:700;font-size:14px}
+.hero{text-align:center;padding:36px 20px 18px}
+.badge{background:#ede9fe;color:#6d28d9;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:700}
+.hero h1{font-size:36px;line-height:1.1;margin:16px 0 10px;letter-spacing:-1px}
+.hero p{color:#555;font-size:16px;line-height:1.5;max-width:480px;margin:0 auto}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:18px 16px;max-width:600px;margin:0 auto}
+.card{background:#fff;border-radius:16px;padding:16px;text-align:left;box-shadow:0 4px 14px rgba(0,0,0,.05);border:1px solid #eee}
+.card b{display:block;font-size:15px;margin-bottom:4px}
+.card small{color:#666;line-height:1.4;display:block}
+.chat-wrap{max-width:600px;margin:0 auto;padding:0 16px}
+.chat{background:#fff;border-radius:18px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.07);min-height:120px}
+.msg{margin-bottom:12px;line-height:1.5;font-size:15px}
+.msg.user{font-weight:700}
+.msg.ai{background:#f3f0ff;padding:10px 12px;border-radius:12px}
+.input-box{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 12px 18px;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.input-row{display:flex;gap:8px;max-width:600px;margin:0 auto}
+input{flex:1;padding:13px 16px;border-radius:999px;border:1px solid #ddd;font-size:15px;outline:none}
+.send{background:#6d28d9;color:#fff;border:none;padding:0 20px;border-radius:999px;font-weight:800}
+.footer{text-align:center;color:#999;font-size:12px;margin-top:14px}
+@media(max-width:380px){.hero h1{font-size:30px}}
+</style>
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar" id="sidebar">
-      <a class="brand" href="/" aria-label="Jargon AI home"><span class="brand-mark">J</span><span><strong>JARGON</strong><small>INTELLIGENCE, REFINED</small></span></a>
-      <button class="new-chat" id="newChat"><span>＋</span> New conversation</button>
-      <div class="side-label">WORKSPACE</div>
-      <button class="nav-item active"><span>✧</span> AI Assistant</button>
-      <button class="nav-item" id="historyJump"><span>◷</span> Recent conversations</button>
-      <div class="side-label history-label">YOUR HISTORY</div>
-      <div class="history-list" id="historyList"><p class="empty-history">Your conversations will appear here.</p></div>
-      <div class="sidebar-bottom"><div class="profile-orb">J</div><div class="profile-copy"><strong>Personal workspace</strong><small>Private on this device</small></div><span class="status-dot"></span></div>
-    </aside>
-    <main class="main-panel">
-      <header class="topbar">
-        <button class="mobile-menu" id="menuToggle" aria-label="Open menu">☰</button>
-        <div class="top-context"><span class="live-dot"></span> YOUR PRIVATE AI SPACE</div>
-        <div class="top-actions"><a class="install-button" href="/account" style="text-decoration:none">Account / Plans</a><button class="install-button" id="installButton" hidden>＋ Install app</button><span class="model-pill">✦ &nbsp;Jargon Assistant</span></div>
-      </header>
-      <section class="chat-stage" id="chatStage">
-        <div class="welcome" id="welcome">
-          <div class="eyebrow"><span></span> A MORE THOUGHTFUL WAY TO WORK <span></span></div>
-          <div class="hero-symbol"><div class="symbol-ring"></div><span>✧</span></div>
-          <h1>Good ideas begin<br>with <em>a question.</em></h1>
-          <p class="welcome-copy">A little clarity can change everything. Ask, explore, create —<br class="desktop-break"> your next thought has a place to grow.</p>
-          <div class="suggestion-grid">
-            <button class="suggestion" data-prompt="Help me understand a difficult topic in simple language."><span class="suggestion-icon">◈</span><span><strong>Learn something</strong><small>Make complex ideas simple</small></span><b>↗</b></button>
-            <button class="suggestion" data-prompt="Help me brainstorm a fresh business idea and a practical plan."><span class="suggestion-icon">✧</span><span><strong>Explore an idea</strong><small>Turn a thought into a plan</small></span><b>↗</b></button>
-            <button class="suggestion" data-prompt="Help me write a polished professional email."><span class="suggestion-icon">⌁</span><span><strong>Write with ease</strong><small>Find the right words</small></span><b>↗</b></button>
-            <button class="suggestion" data-prompt="Create a practical step-by-step study plan for me."><span class="suggestion-icon">▤</span><span><strong>Get organised</strong><small>Bring order to your day</small></span><b>↗</b></button>
-          </div>
-        </div>
-        <div class="messages" id="messages" aria-live="polite"></div>
-      </section>
-      <footer class="composer-wrap">
-        <div class="feature-toolbar">
-          <label class="tool-button" for="fileInput" title="Attach an image or document">＋ Attach file</label><input id="fileInput" type="file" accept="image/*,.pdf,.docx,.txt" hidden>
-          <button class="tool-button" type="button" id="voiceButton">🎙 Voice</button>
-          <label class="search-toggle"><input type="checkbox" id="webSearchToggle"> Search web</label>
-          <button class="tool-button" type="button" id="imageToolButton">✦ Create image</button>
-        </div>
-        <div class="attachment-note" id="attachmentNote" hidden></div>
-        <form class="composer" id="chatForm">
-          <textarea id="messageInput" rows="1" placeholder="Ask Jargon anything..." aria-label="Your message"></textarea>
-          <div class="composer-bottom"><span class="composer-hint"><span>✧</span> Thoughtful answers. Fresh possibilities.</span><button class="send-button" id="sendButton" type="submit" aria-label="Send message"><span>Send</span><b>↑</b></button></div>
-        </form>
-        <p class="disclaimer">Jargon can make mistakes. Verify important information.</p>
-      </footer>
-    </main>
-  </div>
-  <div class="toast" id="toast" role="status"></div>
-  <dialog id="imageDialog" class="image-dialog"><form method="dialog"><button class="dialog-close" aria-label="Close">×</button></form><h2>Create an image</h2><p>Describe the image you want Jargon to generate.</p><textarea id="imagePrompt" placeholder="A modern Kenyan coffee shop poster..." rows="4"></textarea><button id="generateImageButton" class="send-button" type="button"><span>Generate image</span><b>✦</b></button><div id="generatedImageResult"></div></dialog>
-  <script src="script.js"></script>
+
+<div class="topbar">
+<div class="logo">JARGON<span> AI</span></div>
+<button class="new-btn" onclick="newChat()">+ New conversation</button>
+</div>
+
+<div class="hero">
+<div class="badge">✦ YOUR PRIVATE AI SPACE</div>
+<h1>Good ideas begin<br>with a question.</h1>
+<p>A little clarity can change everything. Ask, explore, create — your next thought has a place to grow.</p>
+</div>
+
+<div class="grid">
+<div class="card" onclick="askThis('Teach me something new in 1 minute')"><b>✦ Learn something</b><small>Make complex ideas simple</small></div>
+<div class="card" onclick="askThis('Help me turn my idea into a plan')"><b>✦ Explore an idea</b><small>Turn a thought into a plan</small></div>
+<div class="card" onclick="askThis('Help me write a professional message')"><b>✦ Write with ease</b><small>Find the right words</small></div>
+<div class="card" onclick="askThis('Help me organise my day')"><b>☰ Get organised</b><small>Bring order to your day</small></div>
+</div>
+
+<div class="chat-wrap">
+<div class="chat" id="chat">
+<div class="msg ai"><b>Jargon AI:</b> Hello! 👋 I'm Jargon. Ask me anything - e.g. "What is a cupcake?" or "Help me write a CV"</div>
+</div>
+</div>
+
+<div class="input-box">
+<div class="input-row">
+<input id="input" placeholder="Ask Jargon anything..." onkeypress="if(event.key==='Enter')send()">
+<button class="send" onclick="send()">Send ↑</button>
+</div>
+<div class="footer">Jargon can make mistakes. Verify important information.</div>
+</div>
+
+<script>
+function newChat(){document.getElementById('chat').innerHTML='<div class="msg ai"><b>Jargon AI:</b> Fresh start! What shall we work on today?</div>';}
+function askThis(t){document.getElementById('input').value=t;send();}
+function send(){
+let inp=document.getElementById('input');
+let q=inp.value.trim(); if(!q) return;
+let chat=document.getElementById('chat');
+chat.innerHTML+='<div class="msg user">You: '+q+'</div>';
+let ans=getAnswer(q.toLowerCase());
+chat.innerHTML+='<div class="msg ai"><b>Jargon AI:</b> '+ans+'</div>';
+inp.value=''; window.scrollTo(0,document.body.scrollHeight);
+}
+function getAnswer(q){
+if(q.includes('cupcake')) return 'A cupcake is a small, sweet cake baked in a paper cup! 🧁 It is soft inside, usually topped with frosting, and perfect for one person. Think of it as a mini birthday cake you can hold in your hand.';
+if(q.includes('hello')||q.includes('hi')) return 'Hello! Great to see you 😊 What do you want to learn, write, or plan today? Try tapping one of the cards above.';
+if(q.includes('cv')||q.includes('resume')) return 'I can help you write a great CV! Tell me: 1) What job do you want? 2) What experience do you have? 3) What is your education? I will turn it into a professional CV.';
+if(q.includes('business')||q.includes('idea')) return 'Great idea! Let us make it a plan: 1) Who is your customer? 2) What problem do you solve? 3) How will you charge? Tell me your idea and I will build the full plan with you.';
+if(q.includes('learn')||q.includes('teach')) return 'Here is something new in 30 seconds: Your brain learns best when you teach someone else. So after you learn something, try explaining it to a friend in simple words. That is the secret to remembering it!';
+return 'Great question! Here is how to think about "'+q+'": <br><br>1) What is the main goal?<br>2) What is the simplest first step?<br>3) What could go wrong?<br><br>Tell me more detail and I will give you a full step-by-step answer tailored to you.';
+}
+</script>
 </body>
-</html>
+  </html>
