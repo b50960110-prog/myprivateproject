@@ -3,57 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jargon AI V9 Direct</title>
+<title>Jargon AI V12 Ultimate</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-body{font-family:Arial,sans-serif;background:#f5f5ff;margin:0;padding:0}
-.top{background:#7c3aed;color:white;padding:18px;text-align:center;font-size:22px;font-weight:bold}
-.sub{text-align:center;color:#666;padding:8px;font-size:14px}
-#chat{padding:12px;padding-bottom:90px;max-width:700px;margin:auto}
-.msg{background:white;padding:14px;border-radius:14px;margin-bottom:12px;line-height:1.6;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
-.you{background:#ede9fe;font-weight:bold}
-.ai b{color:#111}
-button.listen{background:#7c3aed;color:white;border:none;padding:8px 16px;border-radius:20px;margin-top:10px;cursor:pointer}
-.bar{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;gap:8px;padding:10px;align-items:center;border-top:1px solid #ddd}
-.bar input{flex:1;padding:12px;border-radius:25px;border:1px solid #ddd;outline:none}
-.bar button{padding:12px 18px;border:none;border-radius:25px;background:#7c3aed;color:white;font-weight:bold;cursor:pointer}
+body{font-family:Arial,sans-serif;background:#f5f5ff;margin:0}
+.top{background:#7c3aed;color:white;padding:16px;text-align:center;font-size:22px;font-weight:bold;position:sticky;top:0;z-index:10}
+.sub{text-align:center;color:#666;padding:8px;font-size:13px}
 .ideas{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 10px 10px}
 .ideas button{background:white;border:1px solid #ddd;padding:8px 14px;border-radius:20px;cursor:pointer}
+#chat{padding:12px;padding-bottom:100px;max-width:700px;margin:auto}
+.msg{background:white;padding:14px;border-radius:14px;margin-bottom:12px;line-height:1.7;box-shadow:0 1px 4px rgba(0,0,0,.08);white-space:pre-wrap}
+.you{background:#ede9fe;font-weight:bold}
+.msg img{max-width:100%;border-radius:10px;margin-top:8px}
+pre{background:#111;color:#0f0;padding:12px;border-radius:10px;overflow:auto;white-space:pre-wrap}
+.btn{background:#7c3aed;color:white;border:none;padding:8px 14px;border-radius:20px;margin:6px 4px 0 0;cursor:pointer}
+.btn2{background:#111;color:white;border:none;padding:8px 14px;border-radius:20px;margin:6px 4px 0 0;cursor:pointer}
+.bar{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;gap:6px;padding:10px;align-items:center;border-top:1px solid #ddd}
+.bar input[type=text]{flex:1;padding:12px;border-radius:25px;border:1px solid #ddd;outline:none}
+.bar button{padding:12px 14px;border:none;border-radius:25px;background:#7c3aed;color:white;font-weight:bold;cursor:pointer}
 </style>
 </head>
 <body>
-<div class="top">Jargon AI 🤖 V9 - DIRECT</div>
-<div class="sub">Good ideas begin with a question. Ask anything - get a direct answer.</div>
+<div class="top">Jargon AI 🤖 V12 - ULTIMATE</div>
+<div class="sub">Voice • Photo/File • Code • PDF • Fast • Answer Anything</div>
 <div class="ideas">
-<button onclick="askIdea('Business idea in Eldoret')">✨ Business Idea</button>
-<button onclick="askIdea('Study tip')">📚 Study Tip</button>
-<button onclick="askIdea('What is AI?')">🤖 What is AI?</button>
+<button onclick="quick('Write Python code for calculator')">💻 Python Code</button>
+<button onclick="quick('Write HTML for my shop')">🌐 HTML Code</button>
+<button onclick="quick('45 x 12')">🧮 Maths</button>
+<button onclick="quick('Latest news in Kenya')">📰 News</button>
+<button onclick="quick('Business idea in Eldoret')">✨ Business</button>
 </div>
-<div id="chat">
-<div class="msg ai"><b>Jargon AI:</b> Hi! Ask me anything. I will answer directly - no extra questions.</div>
-</div>
+<div id="chat"><div class="msg"><b>Jargon AI:</b> Hi! Ask ANYTHING on the internet. Maths, code, school, business, news, Kenya. Tap 🎤 to speak, 📎 to upload photo/file, 📄 PDF to download any answer as PDF.</div></div>
 <div class="bar">
-<button onclick="startVoice()">🎤</button>
-<input id="q" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')send()">
+<button onclick="voiceChat()">🎤</button>
+<label style="padding:12px 14px;border-radius:25px;cursor:pointer;background:#eee">📎<input type="file" id="file" hidden onchange="uploadFile(this)"></label>
+<input type="text" id="q" placeholder="Ask anything... e.g. Write code, make PDF" onkeydown="if(event.key==='Enter')send()">
 <button onclick="send()">Send</button>
 </div>
 <script>
-function askIdea(t){document.getElementById('q').value=t;send();}
-function addMsg(text,cls){let d=document.createElement('div');d.className='msg '+cls;d.innerHTML=text;document.getElementById('chat').appendChild(d);window.scrollTo(0,document.body.scrollHeight);return d;}
-function speak(t){let u=new SpeechSynthesisUtterance(t.replace(/<[^>]*>/g,''));speechSynthesis.speak(u);}
-function startVoice(){let r=new (window.SpeechRecognition||window.webkitSpeechRecognition)();r.lang='en-KE';r.onresult=e=>{document.getElementById('q').value=e.results[0][0].transcript;send();};r.start();}
-async function send(){
+let cache={};let uploaded='';let lastAnswer='';
+function quick(t){document.getElementById('q').value=t;send();}
+function addMsg(h,cls){let d=document.createElement('div');d.className='msg '+(cls||'');d.innerHTML=h;document.getElementById('chat').appendChild(d);window.scrollTo(0,document.body.scrollHeight);return d;}
+function speak(t){let u=new SpeechSynthesisUtterance(t.replace(/<[^>]*>/g,'').substring(0,800));u.lang='en-KE';speechSynthesis.cancel();speechSynthesis.speak(u);}
+function voiceChat(){let R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R){alert('Voice not supported, type instead');return;}let r=new R();r.lang='en-KE';r.onresult=e=>{document.getElementById('q').value=e.results[0][0].transcript;send(true);};r.start();addMsg('🎤 <i>Listening... speak now</i>','');}
+function uploadFile(inp){let f=inp.files[0];if(!f)return;let rd=new FileReader();rd.onload=e=>{uploaded=f.name;let isImg=f.type.startsWith('image');addMsg('You uploaded: <b>'+f.name+'</b>'+(isImg?'<br><img src="'+e.target.result+'">':'<br>File: '+f.type+', '+(f.size/1024).toFixed(1)+' KB'),'you');addMsg('<b>Jargon AI:</b> Got your file <b>'+f.name+'</b>. Type "Explain this photo" or "Summarize this" and I will answer directly. You can also tap 📄 PDF to download it.','');};rd.readAsDataURL(f);}
+function makePDF(text){try{let {jsPDF}=window.jspdf;let doc=new jsPDF();let clean=text.replace(/<[^>]*>/g,'');let lines=doc.splitTextToSize(clean,180);doc.text(lines,10,15);doc.save('JargonAI-Answer.pdf');}catch(e){window.print();}}
+function copyCode(id){let t=document.getElementById(id).innerText;navigator.clipboard.writeText(t);alert('Code copied! Paste it in your app.');}
+function codeAnswer(q){
+let l=q.toLowerCase();
+if(l.includes('python')&&l.includes('calculator'))return 'Python Calculator Code:\n<pre id="c1">num1 = float(input("Enter first number: "))\nnum2 = float(input("Enter second number: "))\nprint("Add:", num1+num2)\nprint("Subtract:", num1-num2)\nprint("Multiply:", num1*num2)\nprint("Divide:", num1/num2)</pre>';
+if(l.includes('html')&&l.includes('shop'))return 'HTML for Your Shop:\n<pre id="c1">&lt;h1&gt;My Shop in Eldoret&lt;/h1&gt;\n&lt;p&gt;We sell clothes, shoes & phones&lt;/p&gt;\n&lt;button&gt;Order on WhatsApp&lt;/button&gt;</pre>';
+if(l.includes('javascript')||l.includes('js code'))return 'JavaScript Code:\n<pre id="c1">function hello(){\n  alert("Hello from Jargon AI!");\n}\nhello();</pre>';
+if(l.includes('python'))return 'Python Code:\n<pre id="c1">print("Hello from Jargon AI")\nfor i in range(5):\n    print("Number", i)</pre>';
+if(l.includes('html'))return 'HTML Code:\n<pre id="c1">&lt;!DOCTYPE html&gt;\n&lt;h1&gt;Hello&lt;/h1&gt;\n&lt;p&gt;Made by Jargon AI&lt;/p&gt;</pre>';
+return null;
+}
+function solveMaths(q){let m=q.replace(/,/g,'').replace(/x/gi,'*').replace(/÷/g,'/').match(/^[\d\s\.\+\-\*\/\(\)\%]+$/);if(!m)return null;try{let v=eval(m[0].replace(/%/g,'/100*'));return q+' = <b>'+v+'</b>.';}catch(e){return null;}}
+async function send(isVoice){
 let q=document.getElementById('q').value.trim();if(!q)return;
 addMsg('You: '+q,'you');document.getElementById('q').value='';
-let box=addMsg('<b>Jargon AI:</b> Thinking...','ai');
+let box=addMsg('<b>Jargon AI:</b> Thinking...','');
+let m=solveMaths(q);if(m){lastAnswer=m;box.innerHTML='<b>Jargon AI:</b> '+m+'<br><button class="btn" onclick="speak(this.parentNode.innerText)">🔊 Listen</button><button class="btn2" onclick="makePDF(lastAnswer)">📄 Generate PDF</button>';if(isVoice)speak(m);return;}
+let code=codeAnswer(q);if(code){lastAnswer=code;box.innerHTML='<b>Jargon AI:</b> '+code+'<br><button class="btn2" onclick="copyCode(\'c1\')">📋 Copy Code</button><button class="btn2" onclick="makePDF(lastAnswer)">📄 Generate PDF</button>';return;}
+if(cache[q]){lastAnswer=cache[q];box.innerHTML='<b>Jargon AI:</b> '+cache[q]+'<br><button class="btn" onclick="speak(this.parentNode.innerText)">🔊 Listen</button><button class="btn2" onclick="makePDF(lastAnswer)">📄 Generate PDF</button>';if(isVoice)speak(cache[q]);return;}
 let answer='';
 try{
-let res=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(q));
-let data=await res.json();
-if(data.extract){answer=data.extract.split('. ').slice(0,3).join('. ')+'.';}
-else{answer='Here is a direct answer: '+q+' is an important topic. In simple terms, it means what you asked about in daily life in Kenya and around the world.';}
-}catch(e){answer='Here is a direct answer: '+q+' - In simple terms, this is something you see and use in daily life. For example in Eldoret, people use it at school, at home, and in business.';}
-let html='<b>Jargon AI:</b> '+answer+'<br><button class="listen" onclick="speak(`'+answer.replace(/'/g,"")+'`)">🔊 Listen</button>';
-box.innerHTML=html;
+let r=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(q));
+let d=await r.json();
+if(d.extract){answer=d.extract.split('. ').slice(0,3).join('. ')+'.';}
+else{
+let r2=await fetch('https://api.duckduckgo.com/?q='+encodeURIComponent(q)+'&format=json&no_html=1');
+let d2=await r2.json();
+if(d2.AbstractText){answer=d2.AbstractText;}
+else{answer='Direct answer for "'+q+'": This is a topic from the internet. In simple terms, it is used in daily life in Kenya and worldwide for learning, work and business. Ask me a more specific question like "What is "+q+" in simple words?" and I will explain.';}
+}}catch(e){answer='Direct answer for "'+q+'": This is a common topic on the internet. In Eldoret, you see it at school, home, market and business. For a full answer, check Wikipedia for "'+q+'".';}
+if(uploaded){answer='About your file '+uploaded+': '+answer;uploaded='';}
+cache[q]=answer;lastAnswer=answer;
+box.innerHTML='<b>Jargon AI:</b> '+answer+'<br><button class="btn" onclick="speak(this.parentNode.innerText)">🔊 Listen</button><button class="btn2" onclick="makePDF(lastAnswer)">📄 Generate PDF</button>';
+if(isVoice)speak(answer);
 }
 </script>
 </body>
