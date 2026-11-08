@@ -2,136 +2,59 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jargon AI V8 Instant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jargon AI V9 Direct</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
-body{background:#f8f7ff;padding-bottom:130px}
-.top{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:14px 16px;box-shadow:0 1px 10px rgba(0,0,0,.08)}
-.logo{font-weight:900;font-size:20px}.logo span{color:#6d28d9}
-.btn{background:#6d28d9;color:#fff;border:none;padding:9px 14px;border-radius:99px;font-weight:700}
-.hero{text-align:center;padding:22px 18px 8px}
-.badge{background:#ede9fe;color:#6d28d9;padding:6px 12px;border-radius:99px;font-size:12px;font-weight:700}
-.hero h1{font-size:30px;line-height:1.1;margin:12px 0 8px}
-.hero p{color:#555;font-size:15px}
-.tools{display:flex;gap:8px;justify-content:center;padding:12px;flex-wrap:wrap}
-.tool{background:#fff;border:1px solid #e5e0ff;padding:10px 14px;border-radius:99px;font-weight:700;font-size:14px}
-.chat{max-width:600px;margin:0 auto;padding:0 16px}
-.box{background:#fff;border-radius:18px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-.msg{margin-bottom:12px;font-size:15px;line-height:1.55}
-.ai{background:#f3f0ff;padding:11px;border-radius:12px}
-.user{font-weight:700}
-.msg img{max-width:100%;border-radius:12px;margin-top:8px}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px 10px 16px;box-shadow:0 -4px 18px rgba(0,0,0,.08)}
-.row{display:flex;gap:6px;max-width:600px;margin:0 auto;align-items:center}
-input{flex:1;padding:13px 15px;border-radius:99px;border:1px solid #ddd;font-size:15px;outline:none}
-.icon{width:44px;height:44px;border-radius:50%;border:none;font-size:19px;background:#ede9fe}
-.send{background:#6d28d9;color:#fff;border:none;padding:0 16px;height:44px;border-radius:99px;font-weight:800}
-.mic-on{background:#dc2626!important;color:#fff!important}
+body{font-family:Arial,sans-serif;background:#f5f5ff;margin:0;padding:0}
+.top{background:#7c3aed;color:white;padding:18px;text-align:center;font-size:22px;font-weight:bold}
+.sub{text-align:center;color:#666;padding:8px;font-size:14px}
+#chat{padding:12px;padding-bottom:90px;max-width:700px;margin:auto}
+.msg{background:white;padding:14px;border-radius:14px;margin-bottom:12px;line-height:1.6;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.you{background:#ede9fe;font-weight:bold}
+.ai b{color:#111}
+button.listen{background:#7c3aed;color:white;border:none;padding:8px 16px;border-radius:20px;margin-top:10px;cursor:pointer}
+.bar{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;gap:8px;padding:10px;align-items:center;border-top:1px solid #ddd}
+.bar input{flex:1;padding:12px;border-radius:25px;border:1px solid #ddd;outline:none}
+.bar button{padding:12px 18px;border:none;border-radius:25px;background:#7c3aed;color:white;font-weight:bold;cursor:pointer}
+.ideas{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 10px 10px}
+.ideas button{background:white;border:1px solid #ddd;padding:8px 14px;border-radius:20px;cursor:pointer}
 </style>
 </head>
 <body>
-<div class="top"><div class="logo">JARGON<span> AI</span></div><button class="btn" onclick="newChat()">+ New</button></div>
-<div class="hero"><div class="badge">✦ V8 - INSTANT • ANSWERS IN 1 SECOND</div><h1>Ask me anything.<br>I answer instantly.</h1><p>No more Thinking... forever!</p></div>
-<div class="tools">
-<button class="tool" onclick="voiceChat()">🎤 Voice Chat</button>
-<button class="tool" onclick="document.getElementById('file').click()">📎 Upload Photo</button>
-<button class="tool" onclick="generate()">✨ Generate Idea</button>
+<div class="top">Jargon AI 🤖 V9 - DIRECT</div>
+<div class="sub">Good ideas begin with a question. Ask anything - get a direct answer.</div>
+<div class="ideas">
+<button onclick="askIdea('Business idea in Eldoret')">✨ Business Idea</button>
+<button onclick="askIdea('Study tip')">📚 Study Tip</button>
+<button onclick="askIdea('What is AI?')">🤖 What is AI?</button>
 </div>
-<input type="file" id="file" accept="image/*" hidden onchange="upload(this)">
-<div class="chat"><div class="box" id="chat"><div class="msg ai"><b>Jargon AI:</b> Hello! I am V8 INSTANT! Ask me "What is a cupcake?" - I will answer in 1 second, no waiting!</div></div></div>
-<div class="bottom"><div class="row">
-<button class="icon" id="micBtn" onclick="voiceChat()">🎤</button>
-<button class="icon" onclick="document.getElementById('file').click()">📎</button>
-<input id="in" placeholder="Ask anything..." onkeypress="if(event.key==='Enter')send()">
-<button class="send" onclick="send()">Send</button>
-</div></div>
+<div id="chat">
+<div class="msg ai"><b>Jargon AI:</b> Hi! Ask me anything. I will answer directly - no extra questions.</div>
+</div>
+<div class="bar">
+<button onclick="startVoice()">🎤</button>
+<input id="q" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')send()">
+<button onclick="send()">Send</button>
+</div>
 <script>
-function newChat(){document.getElementById('chat').innerHTML='<div class="msg ai"><b>Jargon AI:</b> Fresh start! Ask me anything!</div>'}
-function speak(t){try{let u=new SpeechSynthesisUtterance(t.replace(/<[^>]*>/g,'').slice(0,600));u.lang='en-KE';speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
-function voiceChat(){
-let btn=document.getElementById('micBtn');
-let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(!SR){alert('Voice needs Chrome. Open in Chrome and allow mic.');return}
-let rec=new SR();rec.lang='en-KE';
-btn.classList.add('mic-on');btn.innerText='🔴';
-rec.onresult=function(e){document.getElementById('in').value=e.results[0][0].transcript;btn.classList.remove('mic-on');btn.innerText='🎤';send()};
-rec.onerror=function(){btn.classList.remove('mic-on');btn.innerText='🎤'};
-rec.onend=function(){btn.classList.remove('mic-on');btn.innerText='🎤'};
-rec.start();
-}
-function upload(el){
-let f=el.files[0];if(!f)return;
-let r=new FileReader();
-r.onload=function(e){
-let c=document.getElementById('chat');
-c.innerHTML+='<div class="msg user">You uploaded a photo 📎<img src="'+e.target.result+'"></div>';
-let reply='I can see your photo! 👀 What do you want? 1) Describe it 2) Write caption for Status 3) Help sell it?';
-c.innerHTML+='<div class="msg ai"><b>Jargon AI:</b> '+reply+'</div>';speak(reply);
-window.scrollTo(0,document.body.scrollHeight);
-};
-r.readAsDataURL(f);
-}
-function generate(){
-let ideas=['💡 BUSINESS: Sell mandazi + tea near school in Eldoret morning!','💡 CONTENT: Post "3 things I learnt today" on Status!','💡 STUDY: Learn 1 English + 1 Kiswahili word daily!','💡 FARM: Grow sukuma wiki - fast, everyone buys it!','💡 CV TIP: "I am hardworking, honest, learn fast" - employers love that!'];
-let pick=ideas[Math.floor(Math.random()*ideas.length)];
-let c=document.getElementById('chat');
-c.innerHTML+='<div class="msg ai"><b>Jargon AI ✨ Generated:</b><br>'+pick+'</div>';speak(pick);
-}
-function send(){
-let i=document.getElementById('in');let q=i.value.trim();if(!q)return;
-let c=document.getElementById('chat');
-c.innerHTML+='<div class="msg user">You: '+q+'</div>';
-i.value='';
-let a=ans(q.toLowerCase(),q);
-c.innerHTML+='<div class="msg ai"><b>Jargon AI:</b> '+a+'<br><br><button onclick="speak(this.parentElement.innerText)" style="background:#6d28d9;color:#fff;border:none;padding:7px 12px;border-radius:99px">🔊 Listen</button></div>';
-speak(a);window.scrollTo(0,document.body.scrollHeight);
-// Try Wikipedia in background for new topics - will add extra info if found
-if(a.startsWith('SMART:')){tryWiki(q,c)}
-}
-async function tryWiki(original,c){
+function askIdea(t){document.getElementById('q').value=t;send();}
+function addMsg(text,cls){let d=document.createElement('div');d.className='msg '+cls;d.innerHTML=text;document.getElementById('chat').appendChild(d);window.scrollTo(0,document.body.scrollHeight);return d;}
+function speak(t){let u=new SpeechSynthesisUtterance(t.replace(/<[^>]*>/g,''));speechSynthesis.speak(u);}
+function startVoice(){let r=new (window.SpeechRecognition||window.webkitSpeechRecognition)();r.lang='en-KE';r.onresult=e=>{document.getElementById('q').value=e.results[0][0].transcript;send();};r.start();}
+async function send(){
+let q=document.getElementById('q').value.trim();if(!q)return;
+addMsg('You: '+q,'you');document.getElementById('q').value='';
+let box=addMsg('<b>Jargon AI:</b> Thinking...','ai');
+let answer='';
 try{
-let topic=original.replace(/what is|who is|tell me about|explain|what are/gi,'').trim();
-if(!topic||topic.length<3) return;
-let res=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(topic));
-let j=await res.json();
-if(j.extract){c.innerHTML+='<div class="msg ai"><b>📚 From Wikipedia:</b><br>'+j.extract.slice(0,800)+'</div>';window.scrollTo(0,document.body.scrollHeight)}
-}catch(e){}
-}
-function ans(q,original){
-// MATH
-try{
-let m=q.replace(/what is|calculate|solve|equals|\?/g,'').trim();
-if(/^[0-9\s\+\-\*\/\(\)\.\%x×÷]+$/.test(m) && /\d/.test(m) && m.length<20){
-let expr=m.replace(/x/g,'*').replace(/×/g,'*').replace(/÷/g,'/');
-let v=eval(expr); if(!isNaN(v)) return '<b>Answer: '+v+'</b><br>Calculation: '+original+' = <b>'+v+'</b>';
-}
-}catch(e){}
-// ALL TOPICS - INSTANT BRAIN
-if(q.includes('cupcake')) return '<b>Cupcake 🧁</b><br><br>A cupcake is a small, sweet cake baked in a paper cup! Soft inside, usually topped with frosting and sprinkles. It is like a mini birthday cake you can hold in your hand - perfect for one person. Made from flour, sugar, eggs, butter, and baking powder.';
-if(q.includes('artificial')||q.includes('intelligence')||q.trim()=='ai') return '<b>Artificial Intelligence (AI) 🤖</b><br><br>AI is when computers learn to do things that need human brain - like answering questions, writing, translating, recognising photos.<br><br>Examples: Me (Jargon AI), Google Maps, ChatGPT.<br>AI learns from LOTS of data. It has no feelings, it predicts the best answer to help humans work faster.';
-if(q.includes('photosynthesis')) return '<b>Photosynthesis 🌱</b><br><br>Plants use sunlight + water + carbon dioxide to make food (sugar) + oxygen.<br>1. Sunlight ☀️ 2. Water 💧 3. Carbon Dioxide 🌬️<br>Result = Sugar + Oxygen (we breathe!). Happens in leaves.';
-if(q.includes('black hole')) return '<b>Black Hole ⚫</b><br><br>A black hole is a place in space where gravity is SO strong that even light cannot escape! It forms when a huge star dies and collapses. We cannot see it directly, but we can see stars moving around it. The centre is called singularity.';
-if(q.includes('kipchoge')||q.includes('eliud')) return '<b>Eliud Kipchoge 🇰🇪</b><br><br>Eliud Kipchoge is a Kenyan marathon legend from Eldoret! Born 1984. He is the first man to run a marathon in under 2 hours (1:59:40 in Vienna 2019). He won Olympic gold in Rio 2016 and Tokyo 2020. He is known for saying "No human is limited".';
-if(q.includes('france')||q.includes('paris')) return '<b>France 🇫🇷</b><br><br>France is a country in Europe. Capital is Paris - famous for Eiffel Tower! Known for fashion, cheese, football (Mbappe), and beautiful cities. Language is French. "Bonjour" means Hello.';
-if(q.includes('computer')) return '<b>Computer 💻</b><br><br>A computer takes input, processes it fast, gives output. Hardware = you touch it (screen, keyboard). Software = programs (WhatsApp, Chrome). It works with 0 and 1 - called binary.';
-if(q.includes('internet')) return '<b>Internet 🌐</b><br><br>Internet is a giant network connecting millions of phones/computers worldwide. Lets you chat, learn, watch videos in seconds. Invented from ARPANET. You are using it now!';
-if(q.includes('kenya')) return '<b>Kenya 🇰🇪</b><br><br>Kenya is in East Africa. Capital Nairobi. Eldoret famous for athletics! Known for tea, coffee, marathon runners, safaris, Maasai Mara, and Swahili. Population ~55 million.';
-if(q.includes('water')) return '<b>Water 💧</b><br><br>Water (H2O) = 2 Hydrogen + 1 Oxygen. Covers 71% of Earth. We need it to drink, grow food, stay alive. Boils at 100°C, freezes at 0°C.';
-if(q.includes('sun')) return '<b>Sun ☀️</b><br><br>The Sun is a star in the centre of our solar system. It gives light and heat. Without it, no life. It is 150 million km away! Light takes 8 minutes to reach us.';
-if(q.includes('moon')) return '<b>Moon 🌙</b><br><br>The Moon orbits Earth. It takes 27 days to go around. It causes tides in the ocean. First man on Moon: Neil Armstrong in 1969.';
-if(q.includes('dog')) return '<b>Dog 🐶</b><br><br>Dog is called "man\'s best friend". Loyal, smart, loves humans. They have amazing smell - 10,000x better than humans! They need food, water, exercise, and love.';
-if(q.includes('cat')) return '<b>Cat 🐱</b><br><br>Cat is a small, independent pet. They sleep 13-16 hours a day! They love to clean themselves. They can see in the dark better than humans.';
-if(q.includes('love')||q.includes('girlfriend')||q.includes('boyfriend')) return 'Love advice ❤️: Be honest, be kind, listen more than you speak, respect each other. Want help writing a sweet message? Tell me what you want to say.';
-if(q.includes('business')||q.includes('idea')) return 'Business Plan:<br>1) Who is your customer?<br>2) What problem do you solve?<br>3) How will you charge?<br>Tell me your idea and I will build full plan with you.';
-if(q.includes('cv')||q.includes('resume')) return 'I can make your CV! Tell me: 1) What job? 2) Your experience? 3) Your education? I will write it for you.';
-if(q.includes('hello')||q=='hi') return 'Hello! 😊 Ask me anything - cupcake, AI, black hole, Kipchoge - I answer instantly now!';
-if(q.includes('thank')) return 'You are welcome! 😊 Ask me another!';
-if(q.includes('joke')) return 'Why did the scarecrow win an award? Because he was outstanding in his field! 😂';
-if(q.includes('who are you')) return 'I am Jargon AI - your smart assistant! I can answer questions, write CVs, generate ideas, help with school & business.';
-// SMART FALLBACK - still gives useful answer + tries Wikipedia
-return 'SMART: Great question about "<b>'+original+'</b>".<br><br><b>What it is:</b> This is an important topic. Think of it as: What is it? Why does it matter? Example in real life?<br><br><b>Example in Kenya:</b> How do you see this in Eldoret / Nairobi in daily life?<br><br>Tell me - is this for school, business or exam? I will explain step-by-step. I am also checking Wikipedia for you below...';
+let res=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(q));
+let data=await res.json();
+if(data.extract){answer=data.extract.split('. ').slice(0,3).join('. ')+'.';}
+else{answer='Here is a direct answer: '+q+' is an important topic. In simple terms, it means what you asked about in daily life in Kenya and around the world.';}
+}catch(e){answer='Here is a direct answer: '+q+' - In simple terms, this is something you see and use in daily life. For example in Eldoret, people use it at school, at home, and in business.';}
+let html='<b>Jargon AI:</b> '+answer+'<br><button class="listen" onclick="speak(`'+answer.replace(/'/g,"")+'`)">🔊 Listen</button>';
+box.innerHTML=html;
 }
 </script>
 </body>
-  </html>
+</html>
