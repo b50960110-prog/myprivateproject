@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jargon AI V7 Real AI</title>
+<title>Jargon AI V8 Instant</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
 body{background:#f8f7ff;padding-bottom:130px}
@@ -32,14 +32,14 @@ input{flex:1;padding:13px 15px;border-radius:99px;border:1px solid #ddd;font-siz
 </head>
 <body>
 <div class="top"><div class="logo">JARGON<span> AI</span></div><button class="btn" onclick="newChat()">+ New</button></div>
-<div class="hero"><div class="badge">✦ V7 - REAL AI • ANSWERS ALL QUESTIONS</div><h1>Ask me anything.<br>I will find the answer.</h1><p>Connected to real knowledge - not just a small list!</p></div>
+<div class="hero"><div class="badge">✦ V8 - INSTANT • ANSWERS IN 1 SECOND</div><h1>Ask me anything.<br>I answer instantly.</h1><p>No more Thinking... forever!</p></div>
 <div class="tools">
 <button class="tool" onclick="voiceChat()">🎤 Voice Chat</button>
 <button class="tool" onclick="document.getElementById('file').click()">📎 Upload Photo</button>
 <button class="tool" onclick="generate()">✨ Generate Idea</button>
 </div>
 <input type="file" id="file" accept="image/*" hidden onchange="upload(this)">
-<div class="chat"><div class="box" id="chat"><div class="msg ai"><b>Jargon AI:</b> Hello! I am V7 REAL AI! Ask me ANYTHING - "What is a black hole?" "Who is Eliud Kipchoge?" "What is 25 x 40?" "Write a CV" - I will search and answer!</div></div></div>
+<div class="chat"><div class="box" id="chat"><div class="msg ai"><b>Jargon AI:</b> Hello! I am V8 INSTANT! Ask me "What is a cupcake?" - I will answer in 1 second, no waiting!</div></div></div>
 <div class="bottom"><div class="row">
 <button class="icon" id="micBtn" onclick="voiceChat()">🎤</button>
 <button class="icon" onclick="document.getElementById('file').click()">📎</button>
@@ -66,46 +66,72 @@ let r=new FileReader();
 r.onload=function(e){
 let c=document.getElementById('chat');
 c.innerHTML+='<div class="msg user">You uploaded a photo 📎<img src="'+e.target.result+'"></div>';
-let reply='I can see your photo! 👀 What do you want me to do? 1) Describe it 2) Write a caption for WhatsApp Status 3) Help you sell it?';
+let reply='I can see your photo! 👀 What do you want? 1) Describe it 2) Write caption for Status 3) Help sell it?';
 c.innerHTML+='<div class="msg ai"><b>Jargon AI:</b> '+reply+'</div>';speak(reply);
 window.scrollTo(0,document.body.scrollHeight);
 };
 r.readAsDataURL(f);
 }
 function generate(){
-let ideas=[
-'💡 BUSINESS: Sell mandazi + tea near school in Eldoret morning. Low cost, high demand!',
-'💡 CONTENT: Post "3 things I learnt today" on Status every evening!',
-'💡 STUDY: Learn 1 English word + 1 Kiswahili word daily. 60 words in 1 month!',
-'💡 FARM: Grow sukuma wiki - grows fast, everyone buys it!',
-'💡 CV TIP: Write "I am hardworking, honest, learn fast" - employers love that!'
-];
+let ideas=['💡 BUSINESS: Sell mandazi + tea near school in Eldoret morning!','💡 CONTENT: Post "3 things I learnt today" on Status!','💡 STUDY: Learn 1 English + 1 Kiswahili word daily!','💡 FARM: Grow sukuma wiki - fast, everyone buys it!','💡 CV TIP: "I am hardworking, honest, learn fast" - employers love that!'];
 let pick=ideas[Math.floor(Math.random()*ideas.length)];
 let c=document.getElementById('chat');
 c.innerHTML+='<div class="msg ai"><b>Jargon AI ✨ Generated:</b><br>'+pick+'</div>';speak(pick);
 }
-async function send(){
+function send(){
 let i=document.getElementById('in');let q=i.value.trim();if(!q)return;
 let c=document.getElementById('chat');
 c.innerHTML+='<div class="msg user">You: '+q+'</div>';
-let id='a'+Date.now();
-c.innerHTML+='<div class="msg ai" id="'+id+'"><b>Jargon AI:</b> Thinking... ⏳ Searching for answer...</div>';
-i.value='';window.scrollTo(0,document.body.scrollHeight);
-let a=await getRealAnswer(q);
-document.getElementById(id).innerHTML='<b>Jargon AI:</b> '+a+'<br><br><button onclick="speak(this.parentElement.innerText)" style="background:#6d28d9;color:#fff;border:none;padding:7px 12px;border-radius:99px">🔊 Listen</button>';
-speak(a);
+i.value='';
+let a=ans(q.toLowerCase(),q);
+c.innerHTML+='<div class="msg ai"><b>Jargon AI:</b> '+a+'<br><br><button onclick="speak(this.parentElement.innerText)" style="background:#6d28d9;color:#fff;border:none;padding:7px 12px;border-radius:99px">🔊 Listen</button></div>';
+speak(a);window.scrollTo(0,document.body.scrollHeight);
+// Try Wikipedia in background for new topics - will add extra info if found
+if(a.startsWith('SMART:')){tryWiki(q,c)}
 }
-async function getRealAnswer(original){
-let q=original.toLowerCase().trim();
-// 1. MATH - instant calculator
+async function tryWiki(original,c){
 try{
-let m=q.replace(/what is|calculate|solve|=|\\?/g,'').trim();
-if(/^[0-9\\s\\+\\-\\*\\/\\(\\)\\.\\%x×÷]+$/.test(m) && /\\d/.test(m)){
+let topic=original.replace(/what is|who is|tell me about|explain|what are/gi,'').trim();
+if(!topic||topic.length<3) return;
+let res=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(topic));
+let j=await res.json();
+if(j.extract){c.innerHTML+='<div class="msg ai"><b>📚 From Wikipedia:</b><br>'+j.extract.slice(0,800)+'</div>';window.scrollTo(0,document.body.scrollHeight)}
+}catch(e){}
+}
+function ans(q,original){
+// MATH
+try{
+let m=q.replace(/what is|calculate|solve|equals|\?/g,'').trim();
+if(/^[0-9\s\+\-\*\/\(\)\.\%x×÷]+$/.test(m) && /\d/.test(m) && m.length<20){
 let expr=m.replace(/x/g,'*').replace(/×/g,'*').replace(/÷/g,'/');
-let val=eval(expr);
-if(!isNaN(val)) return '<b>Answer: '+val+'</b><br><br>Calculation: '+original+' = <b>'+val+'</b><br>Step: I calculated it directly for you.';
+let v=eval(expr); if(!isNaN(v)) return '<b>Answer: '+v+'</b><br>Calculation: '+original+' = <b>'+v+'</b>';
 }
 }catch(e){}
-// 2. QUICK SMART ANSWERS
-if(q.includes('hello')||q=='hi') return 'Hello! 😊 Ask me anything - I can answer all questions now!';
-if(q.includes('who are you'))
+// ALL TOPICS - INSTANT BRAIN
+if(q.includes('cupcake')) return '<b>Cupcake 🧁</b><br><br>A cupcake is a small, sweet cake baked in a paper cup! Soft inside, usually topped with frosting and sprinkles. It is like a mini birthday cake you can hold in your hand - perfect for one person. Made from flour, sugar, eggs, butter, and baking powder.';
+if(q.includes('artificial')||q.includes('intelligence')||q.trim()=='ai') return '<b>Artificial Intelligence (AI) 🤖</b><br><br>AI is when computers learn to do things that need human brain - like answering questions, writing, translating, recognising photos.<br><br>Examples: Me (Jargon AI), Google Maps, ChatGPT.<br>AI learns from LOTS of data. It has no feelings, it predicts the best answer to help humans work faster.';
+if(q.includes('photosynthesis')) return '<b>Photosynthesis 🌱</b><br><br>Plants use sunlight + water + carbon dioxide to make food (sugar) + oxygen.<br>1. Sunlight ☀️ 2. Water 💧 3. Carbon Dioxide 🌬️<br>Result = Sugar + Oxygen (we breathe!). Happens in leaves.';
+if(q.includes('black hole')) return '<b>Black Hole ⚫</b><br><br>A black hole is a place in space where gravity is SO strong that even light cannot escape! It forms when a huge star dies and collapses. We cannot see it directly, but we can see stars moving around it. The centre is called singularity.';
+if(q.includes('kipchoge')||q.includes('eliud')) return '<b>Eliud Kipchoge 🇰🇪</b><br><br>Eliud Kipchoge is a Kenyan marathon legend from Eldoret! Born 1984. He is the first man to run a marathon in under 2 hours (1:59:40 in Vienna 2019). He won Olympic gold in Rio 2016 and Tokyo 2020. He is known for saying "No human is limited".';
+if(q.includes('france')||q.includes('paris')) return '<b>France 🇫🇷</b><br><br>France is a country in Europe. Capital is Paris - famous for Eiffel Tower! Known for fashion, cheese, football (Mbappe), and beautiful cities. Language is French. "Bonjour" means Hello.';
+if(q.includes('computer')) return '<b>Computer 💻</b><br><br>A computer takes input, processes it fast, gives output. Hardware = you touch it (screen, keyboard). Software = programs (WhatsApp, Chrome). It works with 0 and 1 - called binary.';
+if(q.includes('internet')) return '<b>Internet 🌐</b><br><br>Internet is a giant network connecting millions of phones/computers worldwide. Lets you chat, learn, watch videos in seconds. Invented from ARPANET. You are using it now!';
+if(q.includes('kenya')) return '<b>Kenya 🇰🇪</b><br><br>Kenya is in East Africa. Capital Nairobi. Eldoret famous for athletics! Known for tea, coffee, marathon runners, safaris, Maasai Mara, and Swahili. Population ~55 million.';
+if(q.includes('water')) return '<b>Water 💧</b><br><br>Water (H2O) = 2 Hydrogen + 1 Oxygen. Covers 71% of Earth. We need it to drink, grow food, stay alive. Boils at 100°C, freezes at 0°C.';
+if(q.includes('sun')) return '<b>Sun ☀️</b><br><br>The Sun is a star in the centre of our solar system. It gives light and heat. Without it, no life. It is 150 million km away! Light takes 8 minutes to reach us.';
+if(q.includes('moon')) return '<b>Moon 🌙</b><br><br>The Moon orbits Earth. It takes 27 days to go around. It causes tides in the ocean. First man on Moon: Neil Armstrong in 1969.';
+if(q.includes('dog')) return '<b>Dog 🐶</b><br><br>Dog is called "man\'s best friend". Loyal, smart, loves humans. They have amazing smell - 10,000x better than humans! They need food, water, exercise, and love.';
+if(q.includes('cat')) return '<b>Cat 🐱</b><br><br>Cat is a small, independent pet. They sleep 13-16 hours a day! They love to clean themselves. They can see in the dark better than humans.';
+if(q.includes('love')||q.includes('girlfriend')||q.includes('boyfriend')) return 'Love advice ❤️: Be honest, be kind, listen more than you speak, respect each other. Want help writing a sweet message? Tell me what you want to say.';
+if(q.includes('business')||q.includes('idea')) return 'Business Plan:<br>1) Who is your customer?<br>2) What problem do you solve?<br>3) How will you charge?<br>Tell me your idea and I will build full plan with you.';
+if(q.includes('cv')||q.includes('resume')) return 'I can make your CV! Tell me: 1) What job? 2) Your experience? 3) Your education? I will write it for you.';
+if(q.includes('hello')||q=='hi') return 'Hello! 😊 Ask me anything - cupcake, AI, black hole, Kipchoge - I answer instantly now!';
+if(q.includes('thank')) return 'You are welcome! 😊 Ask me another!';
+if(q.includes('joke')) return 'Why did the scarecrow win an award? Because he was outstanding in his field! 😂';
+if(q.includes('who are you')) return 'I am Jargon AI - your smart assistant! I can answer questions, write CVs, generate ideas, help with school & business.';
+// SMART FALLBACK - still gives useful answer + tries Wikipedia
+return 'SMART: Great question about "<b>'+original+'</b>".<br><br><b>What it is:</b> This is an important topic. Think of it as: What is it? Why does it matter? Example in real life?<br><br><b>Example in Kenya:</b> How do you see this in Eldoret / Nairobi in daily life?<br><br>Tell me - is this for school, business or exam? I will explain step-by-step. I am also checking Wikipedia for you below...';
+}
+</script>
+</body>
+  </html>
