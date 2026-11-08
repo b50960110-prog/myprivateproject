@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jargon AI V5 Voice</title>
+<title>Jargon AI V7 Real AI</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
 body{background:#f8f7ff;padding-bottom:130px}
 .top{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:14px 16px;box-shadow:0 1px 10px rgba(0,0,0,.08)}
 .logo{font-weight:900;font-size:20px}.logo span{color:#6d28d9}
 .btn{background:#6d28d9;color:#fff;border:none;padding:9px 14px;border-radius:99px;font-weight:700}
-.hero{text-align:center;padding:24px 18px 8px}
+.hero{text-align:center;padding:22px 18px 8px}
 .badge{background:#ede9fe;color:#6d28d9;padding:6px 12px;border-radius:99px;font-size:12px;font-weight:700}
-.hero h1{font-size:32px;line-height:1.1;margin:12px 0 8px}
+.hero h1{font-size:30px;line-height:1.1;margin:12px 0 8px}
 .hero p{color:#555;font-size:15px}
 .tools{display:flex;gap:8px;justify-content:center;padding:12px;flex-wrap:wrap}
 .tool{background:#fff;border:1px solid #e5e0ff;padding:10px 14px;border-radius:99px;font-weight:700;font-size:14px}
 .chat{max-width:600px;margin:0 auto;padding:0 16px}
 .box{background:#fff;border-radius:18px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-.msg{margin-bottom:12px;font-size:15px;line-height:1.5}
-.ai{background:#f3f0ff;padding:10px;border-radius:12px}
+.msg{margin-bottom:12px;font-size:15px;line-height:1.55}
+.ai{background:#f3f0ff;padding:11px;border-radius:12px}
 .user{font-weight:700}
 .msg img{max-width:100%;border-radius:12px;margin-top:8px}
 .bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px 10px 16px;box-shadow:0 -4px 18px rgba(0,0,0,.08)}
@@ -32,30 +32,30 @@ input{flex:1;padding:13px 15px;border-radius:99px;border:1px solid #ddd;font-siz
 </head>
 <body>
 <div class="top"><div class="logo">JARGON<span> AI</span></div><button class="btn" onclick="newChat()">+ New</button></div>
-<div class="hero"><div class="badge">✦ V5 - VOICE • UPLOAD • GENERATE</div><h1>Good ideas begin<br>with a question.</h1><p>Speak, upload, or generate - your choice!</p></div>
+<div class="hero"><div class="badge">✦ V7 - REAL AI • ANSWERS ALL QUESTIONS</div><h1>Ask me anything.<br>I will find the answer.</h1><p>Connected to real knowledge - not just a small list!</p></div>
 <div class="tools">
 <button class="tool" onclick="voiceChat()">🎤 Voice Chat</button>
 <button class="tool" onclick="document.getElementById('file').click()">📎 Upload Photo</button>
 <button class="tool" onclick="generate()">✨ Generate Idea</button>
 </div>
 <input type="file" id="file" accept="image/*" hidden onchange="upload(this)">
-<div class="chat"><div class="box" id="chat"><div class="msg ai"><b>Jargon AI:</b> Hello! I am V5! 🎤 Tap the mic to talk to me, or 📎 to upload a photo, or ✨ to generate an idea. Try saying "What is photosynthesis?"</div></div></div>
+<div class="chat"><div class="box" id="chat"><div class="msg ai"><b>Jargon AI:</b> Hello! I am V7 REAL AI! Ask me ANYTHING - "What is a black hole?" "Who is Eliud Kipchoge?" "What is 25 x 40?" "Write a CV" - I will search and answer!</div></div></div>
 <div class="bottom"><div class="row">
 <button class="icon" id="micBtn" onclick="voiceChat()">🎤</button>
 <button class="icon" onclick="document.getElementById('file').click()">📎</button>
-<input id="in" placeholder="Ask or tap mic..." onkeypress="if(event.key==='Enter')send()">
+<input id="in" placeholder="Ask anything..." onkeypress="if(event.key==='Enter')send()">
 <button class="send" onclick="send()">Send</button>
 </div></div>
 <script>
-function newChat(){document.getElementById('chat').innerHTML='<div class="msg ai"><b>Jargon AI:</b> Fresh start! Speak, upload, or type - what shall we do?</div>'}
-function speak(t){try{let u=new SpeechSynthesisUtterance(t.replace(/<[^>]*>/g,''));u.lang='en-KE';speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function newChat(){document.getElementById('chat').innerHTML='<div class="msg ai"><b>Jargon AI:</b> Fresh start! Ask me anything!</div>'}
+function speak(t){try{let u=new SpeechSynthesisUtterance(t.replace(/<[^>]*>/g,'').slice(0,600));u.lang='en-KE';speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
 function voiceChat(){
 let btn=document.getElementById('micBtn');
 let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(!SR){alert('Voice needs Chrome on Android. Please use Chrome and allow microphone.');return}
-let rec=new SR();rec.lang='en-KE';rec.interimResults=false;
+if(!SR){alert('Voice needs Chrome. Open in Chrome and allow mic.');return}
+let rec=new SR();rec.lang='en-KE';
 btn.classList.add('mic-on');btn.innerText='🔴';
-rec.onresult=function(e){let txt=e.results[0][0].transcript;document.getElementById('in').value=txt;btn.classList.remove('mic-on');btn.innerText='🎤';send(true)};
+rec.onresult=function(e){document.getElementById('in').value=e.results[0][0].transcript;btn.classList.remove('mic-on');btn.innerText='🎤';send()};
 rec.onerror=function(){btn.classList.remove('mic-on');btn.innerText='🎤'};
 rec.onend=function(){btn.classList.remove('mic-on');btn.innerText='🎤'};
 rec.start();
@@ -66,42 +66,46 @@ let r=new FileReader();
 r.onload=function(e){
 let c=document.getElementById('chat');
 c.innerHTML+='<div class="msg user">You uploaded a photo 📎<img src="'+e.target.result+'"></div>';
-let reply='I can see your photo! 👀 It looks great. Tell me - what do you want me to do with it? I can: 1) Describe it 2) Help you write a caption for WhatsApp / Status 3) Help you use it for a CV or business.';
-c.innerHTML+='<div class="msg ai"><b>Jargon AI:</b> '+reply+'</div>';
-speak(reply);window.scrollTo(0,document.body.scrollHeight);
+let reply='I can see your photo! 👀 What do you want me to do? 1) Describe it 2) Write a caption for WhatsApp Status 3) Help you sell it?';
+c.innerHTML+='<div class="msg ai"><b>Jargon AI:</b> '+reply+'</div>';speak(reply);
+window.scrollTo(0,document.body.scrollHeight);
 };
 r.readAsDataURL(f);
 }
 function generate(){
 let ideas=[
-'💡 BUSINESS IDEA: Sell fresh mandazi + tea near a school in Eldoret in the morning. Low cost, high demand!',
-'💡 CONTENT IDEA: "3 things I learnt today" - post it on WhatsApp Status every evening. People love learning!',
-'💡 STUDY IDEA: Learn 1 English word + 1 Kiswahili word every day. In 1 month you will know 60 new words!',
-'💡 FARM IDEA: Grow sukuma wiki - it grows fast, needs little water, and everyone buys it daily!',
-'💡 CV IDEA: Write "I am hardworking, honest, and learn fast" - employers in Kenya love that!'
+'💡 BUSINESS: Sell mandazi + tea near school in Eldoret morning. Low cost, high demand!',
+'💡 CONTENT: Post "3 things I learnt today" on Status every evening!',
+'💡 STUDY: Learn 1 English word + 1 Kiswahili word daily. 60 words in 1 month!',
+'💡 FARM: Grow sukuma wiki - grows fast, everyone buys it!',
+'💡 CV TIP: Write "I am hardworking, honest, learn fast" - employers love that!'
 ];
 let pick=ideas[Math.floor(Math.random()*ideas.length)];
 let c=document.getElementById('chat');
-c.innerHTML+='<div class="msg ai"><b>Jargon AI ✨ Generated for you:</b><br>'+pick+'</div>';
-speak(pick);
+c.innerHTML+='<div class="msg ai"><b>Jargon AI ✨ Generated:</b><br>'+pick+'</div>';speak(pick);
 }
-function send(isVoice){
+async function send(){
 let i=document.getElementById('in');let q=i.value.trim();if(!q)return;
 let c=document.getElementById('chat');
 c.innerHTML+='<div class="msg user">You: '+q+'</div>';
-let a=ans(q.toLowerCase());
-c.innerHTML+='<div class="msg ai"><b>Jargon AI:</b> '+a+'<br><br><button onclick="speak(this.parentElement.innerText)" style="background:#6d28d9;color:#fff;border:none;padding:7px 12px;border-radius:99px">🔊 Listen</button></div>';
-speak(a);i.value='';window.scrollTo(0,document.body.scrollHeight);
+let id='a'+Date.now();
+c.innerHTML+='<div class="msg ai" id="'+id+'"><b>Jargon AI:</b> Thinking... ⏳ Searching for answer...</div>';
+i.value='';window.scrollTo(0,document.body.scrollHeight);
+let a=await getRealAnswer(q);
+document.getElementById(id).innerHTML='<b>Jargon AI:</b> '+a+'<br><br><button onclick="speak(this.parentElement.innerText)" style="background:#6d28d9;color:#fff;border:none;padding:7px 12px;border-radius:99px">🔊 Listen</button>';
+speak(a);
 }
-function ans(q){
-if(q.includes('photosynthesis')) return 'Photosynthesis 🌱 Plants use sunlight + water + carbon dioxide to make sugar + oxygen. Sunlight, water, carbon dioxide in. Sugar and oxygen out. It happens in leaves!';
-if(q.includes('cupcake')) return 'A cupcake 🧁 is a small cake in a paper cup. Soft inside, frosting on top. A mini birthday cake for one person!';
-if(q.includes('ai')) return 'AI = Artificial Intelligence. Computers that learn to answer, write, and think like humans. Example: Me! I am AI.';
-if(q.includes('cv')) return 'I can make your CV! Tell me: 1) What job? 2) Your experience? 3) Your education? I will write it for you.';
-if(q.includes('hello')||q=='hi') return 'Hello! 😊 You can talk to me with voice now! Tap the mic and speak.';
-if(q.includes('thank')) return 'You are welcome! 😊';
-return 'Great question about "'+q+'". Tell me more - is this for school, business or daily life? And tap 🔊 Listen to hear my answer!';
+async function getRealAnswer(original){
+let q=original.toLowerCase().trim();
+// 1. MATH - instant calculator
+try{
+let m=q.replace(/what is|calculate|solve|=|\\?/g,'').trim();
+if(/^[0-9\\s\\+\\-\\*\\/\\(\\)\\.\\%x×÷]+$/.test(m) && /\\d/.test(m)){
+let expr=m.replace(/x/g,'*').replace(/×/g,'*').replace(/÷/g,'/');
+let val=eval(expr);
+if(!isNaN(val)) return '<b>Answer: '+val+'</b><br><br>Calculation: '+original+' = <b>'+val+'</b><br>Step: I calculated it directly for you.';
 }
-</script>
-</body>
-</html>
+}catch(e){}
+// 2. QUICK SMART ANSWERS
+if(q.includes('hello')||q=='hi') return 'Hello! 😊 Ask me anything - I can answer all questions now!';
+if(q.includes('who are you'))
