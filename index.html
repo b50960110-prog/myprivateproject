@@ -69,4 +69,23 @@ async function send(isVoice){
   let box=addMsg('<b>Jargon AI:</b> Thinking... 🤔','ai');
   let m=solveMaths(q);if(m){lastAnswer=m;box.innerHTML='<b>Jargon AI:</b> '+m; if(isVoice)speak(m); return;}
   let code=codeAnswer(q);if(code){lastAnswer=code;box.innerHTML='<b>Jargon AI:</b> '+code; if(isVoice)speak(code); return;}
-  if(cache[q]){lastAnswer=cache[q];box.innerHTML='<b>Jargon AI:</b> '+cache[q]; if(isVoice)speak(cache
+  if(cache[q]){lastAnswer=cache[q];box.innerHTML='<b>Jargon AI:</b> '+cache[q]; if(isVoice)speak(cache[q]); return;}
+  let answer=await askGemini(q);
+  if(!answer.startsWith("Error:") && !answer.startsWith("Please paste")){
+    cache[q]=answer;lastAnswer=answer;
+    box.innerHTML='<b>Jargon AI:</b> '+answer+'<br><button onclick="copyCode()">Copy</button>';
+    if(isVoice)speak(answer); return;
+  }
+  try{
+    let r=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(q));
+    let d=await r.json();
+    if(d.extract){answer=d.extract.split('. ').slice(0,3).join('. ')+'.';}
+    else{answer='Direct answer for "'+q+'": This is a great question. '+answer;}
+  }catch(e){answer='Direct answer for "'+q+'": '+answer;}
+  cache[q]=answer;lastAnswer=answer;
+  box.innerHTML='<b>Jargon AI:</b> '+answer+'<br><button onclick="copyCode()">Copy</button>';
+  if(isVoice)speak(answer);
+}
+</script>
+</body>
+</html>
