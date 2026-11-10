@@ -2,29 +2,55 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jargon AI V16 - WORKING</title>
+<title>Jargon AI ✨ Beautiful</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>Jargon AI 🤖 V16 - WORKING</header>
-<div id="topbar">✅ NO KEY NEEDED | <span id="limit">Daily: 50 / 50 left</span></div>
-<div id="messages"><div class="ai-msg"><b>Jargon AI:</b> Hello from Eldoret! 🇰🇪 Type, Speak, Upload Photo, Camera, PDF - All Working!</div></div>
+<div class="bg-blur"></div>
+
+<header>
+  <div class="logo">✨</div>
+  <div>
+    <h1>Jargon AI</h1>
+    <p>Your Smart Friend from Eldoret 🇰🇪</p>
+  </div>
+  <div class="live">● LIVE</div>
+</header>
+
+<div id="topbar">
+  <span>✅ NO KEY NEEDED</span>
+  <span>♾️ UNLIMITED</span>
+</div>
+
+<div id="quick">
+  <button onclick="document.getElementById('messageInput').value='Explain photosynthesis';document.getElementById('chatForm').dispatchEvent(new Event('submit'))">🌱 Photosynthesis</button>
+  <button onclick="document.getElementById('messageInput').value='Help me with maths';document.getElementById('chatForm').dispatchEvent(new Event('submit'))">➗ Maths Help</button>
+  <button onclick="document.getElementById('messageInput').value='Write a story';document.getElementById('chatForm').dispatchEvent(new Event('submit'))">📖 Story</button>
+  <button onclick="document.getElementById('messageInput').value='Explain Kenya history';document.getElementById('chatForm').dispatchEvent(new Event('submit'))">🇰🇪 Kenya</button>
+</div>
+
+<div id="messages">
+  <div class="ai-msg">
+    <div class="avatar">🤖</div>
+    <div class="bubble"><b>Jargon AI ✨</b><br>Hello! I'm Jargon AI. Ask me ANYTHING - unlimited! By text, voice, photo or camera. I can even make a PDF for you!</div>
+  </div>
+</div>
 
 <form id="chatForm">
-<input id="messageInput" placeholder="Ask anything..." autocomplete="off">
-<button type="submit" id="sendBtn">Send ➤</button>
-<button type="button" id="voiceBtn">🎤 Voice</button>
+  <input id="messageInput" placeholder="✨ Ask me anything..." autocomplete="off">
+  <button type="submit" id="sendBtn">➤</button>
+  <button type="button" id="voiceBtn">🎤</button>
 </form>
 
 <div id="toolbar">
-<button type="button" id="fileBtn">📎 File</button>
-<button type="button" id="photoBtn">🖼️ Photo</button>
-<button type="button" id="camBtn">📷 Camera</button>
-<button type="button" id="pdfBtn">📄 Make PDF</button>
-<button type="button" id="readBtn">🔊 Read</button>
-<button type="button" id="copyBtn">📋 Copy</button>
+  <button type="button" id="fileBtn">📎 File</button>
+  <button type="button" id="photoBtn">🖼️ Photo</button>
+  <button type="button" id="camBtn">📷 Camera</button>
+  <button type="button" id="pdfBtn">📄 PDF</button>
+  <button type="button" id="readBtn">🔊 Read</button>
+  <button type="button" id="copyBtn">📋 Copy</button>
 </div>
-<div id="status">Ready ✅</div>
+<div id="status">Ready ✅ - Unlimited - Made with ❤️ in Eldoret</div>
 <div id="preview"></div>
 
 <input type="file" id="fileInput" hidden>
@@ -33,4 +59,4 @@
 
 <script src="script.js"></script>
 </body>
-</html>
+  </html>
