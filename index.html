@@ -1,23 +1,67 @@
-async function askGemini(question){
-  let API_KEY = localStorage.getItem("jargon_key");
-  if(!API_KEY) return "Please paste your API Key in the purple box at the top first!";
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jargon AI V12 - ULTIMATE</title>
+<style>
+body{font-family:Arial;margin:0;background:#f3f0ff}
+header{background:#7c3aed;color:white;padding:15px;text-align:center;font-size:22px;font-weight:bold}
+#msgs{padding:10px;padding-bottom:120px}
+.you{background:#ddd6fe;padding:10px;border-radius:10px;margin:8px 0}
+.ai{background:white;padding:10px;border-radius:10px;margin:8px 0;border:1px solid #ddd}
+#bar{position:fixed;bottom:0;left:0;right:0;background:white;padding:10px;display:flex;gap:5px}
+#q{flex:1;padding:12px;border-radius:20px;border:1px solid #ccc}
+button{padding:12px;border-radius:20px;border:none;background:#7c3aed;color:white;font-weight:bold}
+</style>
+</head>
+<body>
+<header>Jargon AI 🤖 V12 - ULTIMATE</header>
+
+<div style="background:#7c3aed;padding:10px;text-align:center;color:white">🔑 <input id="key" placeholder="Paste Gemini API Key Here" style="width:58%;padding:9px;border-radius:10px;border:none"> <button type="button" onclick="saveKey()" style="padding:9px 12px;border-radius:10px;border:none;background:white;color:#7c3aed;font-weight:bold">Save</button> <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:white;font-size:12px">Get Free Key</a></div>
+
+<div id="msgs"><div class="ai"><b>Jargon AI:</b> Hello from Eldoret! 🇰🇪 Ask me anything. Paste your key at the top first.</div></div>
+
+<div id="bar">
+<input id="q" placeholder="Ask anything...">
+<button onclick="send(false)">Send</button>
+<button onclick="send(true)">🎤</button>
+</div>
+
+<script>
+let cache={}, lastAnswer="", uploaded="";
+function addMsg(t,c){let d=document.createElement("div");d.className=c;d.innerHTML=t;document.getElementById("msgs").appendChild(d);window.scrollTo(0,document.body.scrollHeight);return d;}
+function speak(t){try{let u=new SpeechSynthesisUtterance(t);speechSynthesis.speak(u);}catch(e){}}
+function copyCode(){navigator.clipboard.writeText(lastAnswer);alert("Copied!");}
+function solveMaths(q){
   try{
-    let res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+API_KEY,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({contents:[{parts:[{text:"You are Jargon AI from Eldoret, Kenya. Answer simply for a Kenyan student. Question: "+question}]}]})
-    });
-    let data = await res.json();
-    if(data.error) return "Error: "+data.error.message;
-    return data.candidates[0].content.parts[0].text;
-  }catch(e){ return "Error: "+e; }
+    if(q.match(/^[0-9+\-*/(). ]+$/)){
+      let r=eval(q); if(!isNaN(r)) return q+" = <b>"+r+"</b>";
+    }
+  }catch(e){}
+  return null;
+}
+function codeAnswer(q){
+  if(q.toLowerCase().includes("html") && q.toLowerCase().includes("button")) return "Here is HTML code:<br><pre>&lt;button&gt;Click Me&lt;/button&gt;</pre>";
+  return null;
 }
 function saveKey(){
-  let k = document.getElementById("key").value.trim();
-  localStorage.setItem("jargon_key", k);
+  let k=document.getElementById("key").value.trim();
+  localStorage.setItem("jargon_key",k);
   alert("Key Saved! Now ask anything.");
 }
-
+async function askGemini(question){
+  let API_KEY=localStorage.getItem("jargon_key");
+  if(!API_KEY) return "Please paste your API Key in the purple box at the top first!";
+  try{
+    let res=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+API_KEY,{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({contents:[{parts:[{text:"You are Jargon AI from Eldoret, Kenya. Answer simply for a Kenyan student. Question: "+question}]}]})
+    });
+    let data=await res.json();
+    if(data.error) return "Error: "+data.error.message;
+    return data.candidates[0].content.parts[0].text;
+  }catch(e){return "Error: "+e;}
+}
 async function send(isVoice){
   let q=document.getElementById('q').value.trim();
   if(!q) return;
@@ -25,25 +69,4 @@ async function send(isVoice){
   let box=addMsg('<b>Jargon AI:</b> Thinking... 🤔','ai');
   let m=solveMaths(q);if(m){lastAnswer=m;box.innerHTML='<b>Jargon AI:</b> '+m; if(isVoice)speak(m); return;}
   let code=codeAnswer(q);if(code){lastAnswer=code;box.innerHTML='<b>Jargon AI:</b> '+code; if(isVoice)speak(code); return;}
-  if(cache[q]){lastAnswer=cache[q];box.innerHTML='<b>Jargon AI:</b> '+cache[q]; if(isVoice)speak(cache[q]); return;}
-
-  // NEW: Use Gemini API first
-  let answer = await askGemini(q);
-  if(!answer.startsWith("Error:") && !answer.startsWith("Please paste")){
-    cache[q]=answer;lastAnswer=answer;
-    box.innerHTML='<b>Jargon AI:</b> '+answer+'<br><button onclick="copyCode()">Copy</button>';
-    if(isVoice)speak(answer);
-    return;
-  }
-  // If no key / error, fall back to old Wikipedia way
-  try{
-    let r=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(q));
-    let d=await r.json();
-    if(d.extract){answer=d.extract.split('. ').slice(0,3).join('. ')+'.';}
-    else{answer='Direct answer for "'+q+'": This is a great question. '+answer;}
-  }catch(e){answer='Direct answer for "'+q+'": '+answer;}
-  if(uploaded){answer='About your file '+uploaded+': '+answer;}
-  cache[q]=answer;lastAnswer=answer;
-  box.innerHTML='<b>Jargon AI:</b> '+answer+'<br><button onclick="copyCode()">Copy</button>';
-  if(isVoice)speak(answer);
-}
+  if(cache[q]){lastAnswer=cache[q];box.innerHTML='<b>Jargon AI:</b> '+cache[q]; if(isVoice)speak(cache
