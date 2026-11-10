@@ -4,11 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const messages = document.getElementById("messages");
   if (!form || !input || !messages) return;
 
-  let lastAnswer = "", uploadedText = "", DAILY = 50;
-  let dayKey = "jargon_day_" + new Date().toDateString();
-  function getUsed(){ return parseInt(localStorage.getItem(dayKey) || "0"); }
-  function updateLimit(){ document.getElementById("limit").innerText = "Daily: " + (DAILY - getUsed()) + " / " + DAILY + " left"; }
-  updateLimit();
+  let lastAnswer = "", uploadedText = "";
   function setStatus(t){ document.getElementById("status").innerText = t; }
   function speakText(t){ try{ speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(t); u.lang="en-KE"; speechSynthesis.speak(u);}catch(e){} }
   function makePDF(){
@@ -32,21 +28,18 @@ document.addEventListener("DOMContentLoaded", () => {
     let q=input.value.trim();
     if(!q && !uploadedText){ setStatus("Type something first!"); return; }
     if(!q) q="Explain this file/photo";
-    if(getUsed()>=DAILY){ messages.innerHTML+='<div class="ai-msg"><b>Jargon AI:</b> ⚠️ Daily limit reached! 50 used today. Come back tomorrow.</div>'; return; }
     messages.innerHTML+='<div class="user-msg">You: '+q+'</div>';
     input.value=""; setStatus("Thinking... 🤔");
-    messages.innerHTML+='<div class="ai-msg" id="thinking"><b>Jargon AI:</b> Thinking... 🤔</div>';
-    messages.scrollTop=messages.scrollHeight;
+    messages.innerHTML+='<div class="ai-msg" id="thinking"><div class="avatar">🤖</div><div class="bubble"><b>Jargon AI:</b> Thinking... 🤔</div></div>';
     let m=solveMaths(q);
     let think=document.getElementById("thinking");
-    if(m){ lastAnswer=m; think.innerHTML="<b>Jargon AI:</b> "+m; setStatus("Done ✅"); if(isVoice) speakText(m); return; }
+    if(m){ lastAnswer=m; think.innerHTML="<div class='avatar'>🤖</div><div class='bubble'><b>Jargon AI:</b> "+m+"</div>"; setStatus("Done ✅"); if(isVoice) speakText(m); return; }
     let answer=await askAI(q);
     if(!answer){
       try{ let r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q)); let d=await r.json(); if(d.extract) answer=d.extract.split(". ").slice(0,3).join(". ")+"."; else answer="Sorry, try again."; }catch(e){ answer="Sorry, no internet. Check bundles."; }
     }
-    localStorage.setItem(dayKey, getUsed()+1); updateLimit();
     uploadedText=""; document.getElementById("preview").innerHTML="";
-    lastAnswer=answer; think.innerHTML="<b>Jargon AI:</b> "+answer+"<br><br><button onclick='window.makePDF()'>📄 Make PDF</button>";
+    lastAnswer=answer; think.innerHTML="<div class='avatar'>🤖</div><div class='bubble'><b>Jargon AI:</b> "+answer+"<br><br><button onclick='window.makePDF()'>📄 Make PDF</button></div>";
     setStatus("Done ✅"); if(isVoice) speakText(answer);
   }
   window.makePDF=makePDF;
