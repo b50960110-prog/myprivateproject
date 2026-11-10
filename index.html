@@ -2,81 +2,69 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jargon AI V13 - ULTIMATE</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<title>Jargon AI V14 - FIXED</title>
 <style>
 body{font-family:Arial;margin:0;background:#f3f0ff}
 header{background:#7c3aed;color:white;padding:15px;text-align:center;font-size:22px;font-weight:bold}
-#msgs{padding:10px;padding-bottom:180px}
-.you{background:#ddd6fe;padding:10px;border-radius:10px;margin:8px 0}
-.ai{background:white;padding:10px;border-radius:10px;margin:8px 0;border:1px solid #ddd}
+#msgs{padding:10px;padding-bottom:190px}
+.you{background:#ddd6fe;padding:10px;border-radius:10px;margin:8px 0;word-wrap:break-word}
+.ai{background:white;padding:10px;border-radius:10px;margin:8px 0;border:1px solid #ddd;word-wrap:break-word}
 img.up{max-width:100%;border-radius:10px;margin-top:5px}
-#bar{position:fixed;bottom:0;left:0;right:0;background:white;padding:10px}
+#bar{position:fixed;bottom:0;left:0;right:0;background:white;padding:10px;border-top:2px solid #7c3aed}
 #row1{display:flex;gap:5px}
-#q{flex:1;padding:12px;border-radius:20px;border:1px solid #ccc}
-button{padding:10px;border-radius:20px;border:none;background:#7c3aed;color:white;font-weight:bold}
-button.small{background:#eee;color:#333;padding:8px 10px;font-size:12px}
-#tools{display:flex;gap:5px;margin-top:8px;overflow-x:auto}
+#q{flex:1;padding:12px;border-radius:20px;border:1px solid #ccc;font-size:16px}
+.btn{padding:12px 15px;border-radius:20px;border:none;background:#7c3aed;color:white;font-weight:bold;cursor:pointer}
+.btn:active{background:#5b21b6}
+.small{background:#eee;color:#333;padding:8px 10px;font-size:13px;border-radius:15px;border:none;margin:2px}
+#tools{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+#status{font-size:12px;color:#7c3aed;text-align:center;margin-top:5px}
 </style>
 </head>
 <body>
-<header>Jargon AI 🤖 V13 - ULTIMATE</header>
-<div style="background:#10b981;padding:8px;text-align:center;color:white;font-weight:bold">✅ NO KEY NEEDED | <span id="limit">Daily: 50 / 50 left</span></div>
-<div id="msgs"><div class="ai"><b>Jargon AI:</b> Hello from Eldoret! 🇰🇪 Ask by text, voice, photo or file. I can make PDF for you!</div></div>
+<header>Jargon AI 🤖 V14 - FIXED</header>
+<div style="background:#10b981;padding:8px;text-align:center;color:white;font-weight:bold">✅ NO KEY NEEDED | <span id="limit">Loading...</span></div>
+<div id="msgs"><div class="ai"><b>Jargon AI:</b> Hello from Eldoret! 🇰🇪 I am working now. Type, speak, upload photo, or take camera photo.</div></div>
 
 <div id="bar">
 <div id="row1">
-<input id="q" placeholder="Ask anything...">
-<button onclick="send(false)">Send</button>
-<button onclick="startVoice()">🎤 Voice</button>
+<input id="q" placeholder="Ask anything..." autocomplete="off">
+<button class="btn" id="sendBtn">Send ➤</button>
+<button class="btn" id="voiceBtn" style="background:#dc2626">🎤 Voice</button>
 </div>
+<div id="status" id="statusText"></div>
 <div id="tools">
-<button class="small" onclick="document.getElementById('file').click()">📎 Upload File</button>
-<button class="small" onclick="document.getElementById('photo').click()">🖼️ Upload Photo</button>
-<button class="small" onclick="document.getElementById('cam').click()">📷 Camera</button>
-<button class="small" onclick="makePDF()">📄 Make PDF</button>
-<button class="small" onclick="speak(lastAnswer)">🔊 Read Aloud</button>
-<button class="small" onclick="copyCode()">📋 Copy</button>
+<button class="small" id="fileBtn">📎 File</button>
+<button class="small" id="photoBtn">🖼️ Photo</button>
+<button class="small" id="camBtn">📷 Camera</button>
+<button class="small" id="pdfBtn">📄 Make PDF</button>
+<button class="small" id="readBtn">🔊 Read Aloud</button>
+<button class="small" id="copyBtn">📋 Copy</button>
 </div>
-<input type="file" id="file" hidden onchange="handleFile(this)">
-<input type="file" id="photo" accept="image/*" hidden onchange="handleFile(this)">
-<input type="file" id="cam" accept="image/*" capture="camera" hidden onchange="handleFile(this)">
+<input type="file" id="fileInput" hidden>
+<input type="file" id="photoInput" accept="image/*" hidden>
+<input type="file" id="camInput" accept="image/*" capture="camera" hidden>
 <div id="preview"></div>
 </div>
 
 <script>
-let cache={}, lastAnswer="", uploadedText="", DAILY=50;
-function todayKey(){return "jargon_day_"+new Date().toDateString();}
-function getUsed(){return parseInt(localStorage.getItem(todayKey())||"0");}
+let lastAnswer = "";
+let uploadedText = "";
+let DAILY = 50;
+let todayKey = "jargon_day_" + new Date().toDateString();
+function getUsed(){ return parseInt(localStorage.getItem(todayKey) || "0"); }
 function updateLimit(){
-  let left=DAILY-getUsed();
-  document.getElementById("limit").innerText="Daily: "+left+" / "+DAILY+" left";
+  let left = DAILY - getUsed();
+  if(left < 0) left = 0;
+  document.getElementById("limit").innerText = "Daily: " + left + " / " + DAILY + " left";
 }
 updateLimit();
-function addMsg(t,c){let d=document.createElement("div");d.className=c;d.innerHTML=t;document.getElementById("msgs").appendChild(d);window.scrollTo(0,document.body.scrollHeight);return d;}
-function speak(t){try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);speechSynthesis.speak(u);}catch(e){}}
-function copyCode(){navigator.clipboard.writeText(lastAnswer||"");alert("Copied!");}
+function setStatus(t){ document.getElementById("status").innerText = t; }
+function addMsg(t,c){ let d=document.createElement("div"); d.className=c; d.innerHTML=t; document.getElementById("msgs").appendChild(d); window.scrollTo(0,document.body.scrollHeight); return d; }
+function speakText(t){ try{ speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(t); u.lang="en-KE"; speechSynthesis.speak(u);}catch(e){} }
+function copyCode(){ if(!lastAnswer){alert("Ask something first!");return;} navigator.clipboard.writeText(lastAnswer); alert("Copied!"); }
 function makePDF(){
   if(!lastAnswer){alert("Ask something first!");return;}
-  try{
-    const {jsPDF}=window.jspdf;let doc=new jsPDF();let txt=lastAnswer.replace(/<[^>]*>/g,"");
-    let lines=doc.splitTextToSize(txt,180);doc.text(lines,10,15);doc.save("Jargon-AI-Answer.pdf");
-  }catch(e){window.print();}
+  let w=window.open("","_blank"); w.document.write("<html><head><title>Jargon AI Answer</title></head><body style='font-family:Arial;padding:20px'><h2>Jargon AI 🤖 Answer</h2><p>"+lastAnswer+"</p><hr><small>Made by Jargon AI - Eldoret, Kenya</small><script>window.print()<\/script></body></html>"); w.document.close();
 }
-function startVoice(){
-  let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){alert("Voice not supported on this browser. Use Chrome.");return;}
-  let r=new SR();r.lang="en-KE";r.start();
-  document.getElementById("q").placeholder="Listening... speak now...";
-  r.onresult=(e)=>{document.getElementById("q").value=e.results[0][0].transcript;document.getElementById("q").placeholder="Ask anything...";send(true);};
-}
-function handleFile(input){
-  let f=input.files[0];if(!f) return;
-  let prev=document.getElementById("preview");
-  if(f.type.startsWith("image/")){
-    let reader=new FileReader();
-    reader.onload=(e)=>{prev.innerHTML='<img class="up" src="'+e.target.result+'"><br><small>Photo attached: '+f.name+'</small>';uploadedText="User uploaded a photo named "+f.name+". Describe what might be in it and help with it.";};
-    reader.readAsDataURL(f);
-  } else {
-    let reader=new FileReader();
-    reader.onload=(e)=>{prev.innerHTML='<small>
+function solveMaths(q){
+  try{ let clean=q.replace(/x/g,"*
