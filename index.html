@@ -2,61 +2,83 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jargon AI ✨ Beautiful</title>
-<link rel="stylesheet" href="style.css">
+<title>Jargon AI ✨</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;margin:0;background:#f0e6ff;padding-bottom:200px}
+header{background:linear-gradient(90deg,#7c3aed,#db2777,#f59e0b);color:white;padding:18px 15px;display:flex;align-items:center;gap:12px;border-radius:0 0 25px 25px;box-shadow:0 5px 20px rgba(124,58,237,.4)}
+.logo{width:52px;height:52px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}
+header h1{margin:0;font-size:24px}
+header p{margin:2px 0 0;font-size:12px;opacity:.9}
+.live{background:#10b981;padding:6px 10px;border-radius:20px;font-size:11px;font-weight:bold;margin-left:auto}
+#topbar{background:white;margin:12px;padding:11px 14px;border-radius:15px;display:flex;justify-content:space-between;font-weight:bold;color:#7c3aed;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+#quick{display:flex;gap:8px;overflow-x:auto;padding:0 12px}
+#quick button{white-space:nowrap;background:white;border:2px solid #e9d5ff;padding:9px 14px;border-radius:20px;font-size:13px;font-weight:bold}
+#messages{padding:12px}
+.user-msg{background:linear-gradient(135deg,#7c3aed,#a855f7);color:white;padding:13px;border-radius:18px 18px 4px 18px;margin:10px 0 10px 35px;box-shadow:0 4px 12px rgba(124,58,237,.3)}
+.ai-msg{display:flex;gap:8px;margin:10px 0}
+.avatar{width:38px;height:38px;background:linear-gradient(135deg,#7c3aed,#db2777);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.bubble{background:white;padding:13px;border-radius:18px 18px 18px 4px;box-shadow:0 2px 12px rgba(0,0,0,.08);line-height:1.5;font-size:15px;flex:1}
+#chatForm{position:fixed;bottom:58px;left:10px;right:10px;background:white;padding:8px;display:flex;gap:6px;border-radius:30px;box-shadow:0 8px 25px rgba(0,0,0,.2)}
+#messageInput{flex:1;padding:12px;border:none;outline:none;font-size:16px;background:#f8f5ff;border-radius:20px}
+#chatForm button{width:50px;height:50px;border-radius:50%;border:none;color:white;font-size:20px}
+#sendBtn{background:linear-gradient(135deg,#7c3aed,#db2777)}
+#voiceBtn{background:#dc2626}
+#toolbar{position:fixed;bottom:0;left:0;right:0;background:white;padding:10px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;border-top:1px solid #eee}
+#toolbar button{background:#f3f0ff;border:none;padding:9px 12px;border-radius:20px;font-size:13px;font-weight:bold}
+#status{text-align:center;font-size:12px;color:#7c3aed;padding:6px}
+#preview{text-align:center;padding:10px}
+#preview img{max-width:90%;border-radius:15px}
+</style>
 </head>
 <body>
-<div class="bg-blur"></div>
-
-<header>
-  <div class="logo">✨</div>
-  <div>
-    <h1>Jargon AI</h1>
-    <p>Your Smart Friend from Eldoret 🇰🇪</p>
-  </div>
-  <div class="live">● LIVE</div>
-</header>
-
-<div id="topbar">
-  <span>✅ NO KEY NEEDED</span>
-  <span>♾️ UNLIMITED</span>
-</div>
-
+<header><div class="logo">✨</div><div><h1>Jargon AI</h1><p>Your Smart Friend from Eldoret 🇰🇪</p></div><div class="live">● LIVE</div></header>
+<div id="topbar"><span>✅ NO KEY NEEDED</span><span>♾️ UNLIMITED</span></div>
 <div id="quick">
-  <button onclick="document.getElementById('messageInput').value='Explain photosynthesis';document.getElementById('chatForm').dispatchEvent(new Event('submit'))">🌱 Photosynthesis</button>
-  <button onclick="document.getElementById('messageInput').value='Help me with maths';document.getElementById('chatForm').dispatchEvent(new Event('submit'))">➗ Maths Help</button>
-  <button onclick="document.getElementById('messageInput').value='Write a story';document.getElementById('chatForm').dispatchEvent(new Event('submit'))">📖 Story</button>
-  <button onclick="document.getElementById('messageInput').value='Explain Kenya history';document.getElementById('chatForm').dispatchEvent(new Event('submit'))">🇰🇪 Kenya</button>
+<button onclick="askQuick('Explain photosynthesis simply')">🌱 Photosynthesis</button>
+<button onclick="askQuick('Help me with maths')">➗ Maths Help</button>
+<button onclick="askQuick('Write a short story')">📖 Story</button>
+<button onclick="askQuick('Explain Kenya history')">🇰🇪 Kenya</button>
 </div>
-
-<div id="messages">
-  <div class="ai-msg">
-    <div class="avatar">🤖</div>
-    <div class="bubble"><b>Jargon AI ✨</b><br>Hello! I'm Jargon AI. Ask me ANYTHING - unlimited! By text, voice, photo or camera. I can even make a PDF for you!</div>
-  </div>
-</div>
-
-<form id="chatForm">
-  <input id="messageInput" placeholder="✨ Ask me anything..." autocomplete="off">
-  <button type="submit" id="sendBtn">➤</button>
-  <button type="button" id="voiceBtn">🎤</button>
-</form>
-
-<div id="toolbar">
-  <button type="button" id="fileBtn">📎 File</button>
-  <button type="button" id="photoBtn">🖼️ Photo</button>
-  <button type="button" id="camBtn">📷 Camera</button>
-  <button type="button" id="pdfBtn">📄 PDF</button>
-  <button type="button" id="readBtn">🔊 Read</button>
-  <button type="button" id="copyBtn">📋 Copy</button>
-</div>
+<div id="messages"><div class="ai-msg"><div class="avatar">🤖</div><div class="bubble"><b>Jargon AI ✨</b><br>Hello! I'm Jargon AI. Ask me ANYTHING - unlimited! By text, voice, photo or camera. I can even make a PDF!</div></div></div>
+<form id="chatForm"><input id="messageInput" placeholder="✨ Ask me anything..." autocomplete="off"><button type="submit" id="sendBtn">➤</button><button type="button" id="voiceBtn">🎤</button></form>
+<div id="toolbar"><button type="button" id="fileBtn">📎 File</button><button type="button" id="photoBtn">🖼️ Photo</button><button type="button" id="camBtn">📷 Camera</button><button type="button" id="pdfBtn">📄 PDF</button><button type="button" id="readBtn">🔊 Read</button><button type="button" id="copyBtn">📋 Copy</button></div>
 <div id="status">Ready ✅ - Unlimited - Made with ❤️ in Eldoret</div>
 <div id="preview"></div>
-
-<input type="file" id="fileInput" hidden>
-<input type="file" id="photoInput" accept="image/*" hidden>
-<input type="file" id="camInput" accept="image/*" capture="camera" hidden>
-
-<script src="script.js"></script>
+<input type="file" id="fileInput" hidden><input type="file" id="photoInput" accept="image/*" hidden><input type="file" id="camInput" accept="image/*" capture="camera" hidden>
+<script>
+let lastAnswer="",uploadedText="";
+function askQuick(t){document.getElementById("messageInput").value=t;document.getElementById("chatForm").dispatchEvent(new Event("submit"));}
+function setStatus(t){document.getElementById("status").innerText=t;}
+function speakText(t){try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang="en-KE";speechSynthesis.speak(u);}catch(e){}}
+function makePDF(){if(!lastAnswer){alert("Ask something first");return;}let w=window.open("","_blank");w.document.write("<html><body style='font-family:Arial;padding:20px'><h2>Jargon AI Answer</h2><p>"+lastAnswer+"</p><script>window.print()<\/script></body></html>");w.document.close();}
+function solveMaths(q){try{let c=q.replace(/x/g,"*");if(/^[0-9+\-*/(). ]+$/.test(c)){let r=eval(c);if(!isNaN(r))return q+" = <b>"+r+"</b>";}}catch(e){}return null;}
+async function askAI(q){try{let r=await fetch("https://text.pollinations.ai/"+encodeURIComponent("You are Jargon AI from Eldoret, Kenya. Answer simply. "+uploadedText+" Question: "+q));let t=await r.text();if(t&&t.length>2)return t;}catch(e){}return null;}
+async function doSend(isVoice){
+ let input=document.getElementById("messageInput");let msgs=document.getElementById("messages");let q=input.value.trim();
+ if(!q&&!uploadedText){setStatus("Type something first!");return;}if(!q)q="Explain this file/photo";
+ msgs.innerHTML+='<div class="user-msg">You: '+q+'</div>';input.value="";setStatus("Thinking... 🤔");
+ msgs.innerHTML+='<div class="ai-msg" id="thinking"><div class="avatar">🤖</div><div class="bubble"><b>Jargon AI:</b> Thinking... 🤔</div></div>';
+ let m=solveMaths(q);let think=document.getElementById("thinking");
+ if(m){lastAnswer=m;think.innerHTML="<div class='avatar'>🤖</div><div class='bubble'><b>Jargon AI:</b> "+m+"</div>";setStatus("Done ✅");if(isVoice)speakText(m);return;}
+ let answer=await askAI(q);
+ if(!answer){try{let r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q));let d=await r.json();if(d.extract)answer=d.extract.split(". ").slice(0,3).join(". ")+".";else answer="Sorry, try again.";}catch(e){answer="Sorry, no internet. Check bundles.";}}
+ uploadedText="";document.getElementById("preview").innerHTML="";lastAnswer=answer;
+ think.innerHTML="<div class='avatar'>🤖</div><div class='bubble'><b>Jargon AI:</b> "+answer+"<br><br><button onclick='makePDF()'>📄 Make PDF</button></div>";
+ setStatus("Done ✅");if(isVoice)speakText(answer);
+}
+document.getElementById("chatForm").addEventListener("submit",function(e){e.preventDefault();doSend(false);});
+document.getElementById("voiceBtn").addEventListener("click",function(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert("Voice needs Chrome. Open in Chrome, not WhatsApp.");return;}let r=new SR();r.lang="en-KE";setStatus("🎤 Listening... Speak now...");r.start();r.onresult=function(e){document.getElementById("messageInput").value=e.results[0][0].transcript;doSend(true);};r.onerror=function(){setStatus("Voice error: Tap ALLOW for mic");alert("Allow mic: Chrome > Lock 🔒 > Microphone > Allow");};});
+document.getElementById("pdfBtn").addEventListener("click",makePDF);
+document.getElementById("readBtn").addEventListener("click",function(){speakText(lastAnswer||"Ask me something first");});
+document.getElementById("copyBtn").addEventListener("click",function(){if(!lastAnswer){alert("Ask first");return;}navigator.clipboard.writeText(lastAnswer);alert("Copied!");});
+function handleFile(f){if(!f)return;if(f.type.startsWith("image/")){let rd=new FileReader();rd.onload=function(e){document.getElementById("preview").innerHTML="<img src='"+e.target.result+"'><br><small>Photo: "+f.name+"</small>";};rd.readAsDataURL(f);uploadedText="User uploaded photo "+f.name+". Help with it.";}else{let rd=new FileReader();rd.onload=function(e){document.getElementById("preview").innerHTML="<small>📎 File: "+f.name+"</small>";uploadedText="File "+f.name+" content: "+e.target.result.substring(0,3000);};rd.readAsText(f);}document.getElementById("messages").innerHTML+='<div class="user-msg">You attached: '+f.name+'</div>';setStatus("File attached ✅ Now type question + Send");}
+document.getElementById("fileBtn").addEventListener("click",function(){document.getElementById("fileInput").click();});
+document.getElementById("photoBtn").addEventListener("click",function(){document.getElementById("photoInput").click();});
+document.getElementById("camBtn").addEventListener("click",function(){document.getElementById("camInput").click();});
+document.getElementById("fileInput").addEventListener("change",function(){handleFile(this.files[0]);});
+document.getElementById("photoInput").addEventListener("change",function(){handleFile(this.files[0]);});
+document.getElementById("camInput").addEventListener("change",function(){handleFile(this.files[0]);});
+</script>
 </body>
   </html>
